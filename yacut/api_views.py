@@ -5,7 +5,7 @@ from flask import jsonify, request
 
 from . import app, db
 from .error_handlers import InvalidApiUsage
-from .models import URL_map
+from .models import URL_map, LIMIT
 from .utils import get_unique_short_id
 
 
@@ -18,7 +18,7 @@ def add_link():
         raise InvalidApiUsage('"url" является обязательным полем!')
     short_id = data.get('custom_id')
     if short_id:
-        if len(short_id) >= 16 or not re.match(r'^[a-zA-Z0-9]+$', short_id):
+        if len(short_id) >= LIMIT or not re.match(r'^[a-zA-Z0-9]+$', short_id):
             raise InvalidApiUsage('Указано недопустимое имя для короткой ссылки')
         if URL_map.query.filter_by(short=short_id).first():
             raise InvalidApiUsage(f'Имя "{short_id}" уже занято.')
